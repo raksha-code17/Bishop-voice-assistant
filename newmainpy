@@ -1,0 +1,132 @@
+import speech_recognition as sr
+import webbrowser
+import pyttsx3
+import musiclibrary
+import datetime
+
+recogniser = sr.Recognizer()
+engine = pyttsx3.init()
+
+# Voice settings
+engine.setProperty('rate', 160)
+engine.setProperty('volume', 1.0)
+
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[0].id)
+
+
+def speak(text):
+    print("Bishop:", text)
+    engine.say(text)
+    engine.runAndWait()
+
+
+def processCommand(c):
+
+    c = c.lower()
+
+    if "open google" in c:
+        speak("Opening Google")
+        webbrowser.open("https://google.com")
+
+    elif "open youtube" in c:
+        speak("Opening YouTube")
+        webbrowser.open("https://youtube.com")
+
+    elif "open linkedin" in c:
+        speak("Opening LinkedIn")
+        webbrowser.open("https://linkedin.com")
+
+    elif "open instagram" in c:
+        speak("Opening Instagram")
+        webbrowser.open("https://instagram.com")
+
+    elif c.startswith("play"):
+
+        song = c.replace("play", "", 1).strip()
+
+        if song in musiclibrary.music:
+
+            speak(f"Playing {song}")
+
+            link = musiclibrary.music[song]
+            webbrowser.open(link)
+
+        else:
+            speak("Sorry, I could not find that song.")
+
+    elif "time" in c:
+
+        current_time = datetime.datetime.now().strftime("%I:%M %p")
+
+        speak(f"The current time is {current_time}")
+
+    elif "help" in c:
+
+        speak("You can ask me to open websites, play songs, and tell time.")
+
+    elif "exit" in c or "shutdown" in c:
+
+        speak("Goodbye")
+        exit()
+
+    else:
+        speak("Sorry, I didn't understand that command.")
+
+
+if __name__ == "__main__":
+
+    speak("Initializing Bishop")
+
+    while True:
+
+        try:
+
+            with sr.Microphone() as source:
+
+                print("Listening for wake word...")
+
+                recogniser.adjust_for_ambient_noise(source, duration=1)
+
+                audio = recogniser.listen(
+                    source,
+                    timeout=3,
+                    phrase_time_limit=3
+                )
+
+                word = recogniser.recognize_google(audio)
+
+                print("Heard:", word)
+
+                if "bishop" in word.lower():
+
+                    speak("Yes, how can I assist you?")
+
+                    with sr.Microphone() as source:
+
+                        print("Bishop Active...")
+
+                        audio = recogniser.listen(
+                            source,
+                            timeout=5,
+                            phrase_time_limit=5
+                        )
+
+                        command = recogniser.recognize_google(audio)
+
+                        print("Command:", command)
+
+                        processCommand(command)
+
+        except sr.UnknownValueError:
+            print("Could not understand audio")
+
+        except sr.WaitTimeoutError:
+            print("Listening timeout")
+
+        except sr.RequestError as e:
+            print("Speech Recognition Error:", e)
+
+        except Exception as e:
+            print("Error:", e)
+
