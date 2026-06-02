@@ -58,8 +58,8 @@ Exit
 ## Example Music Library
 
 music = {
-    "believer": "https://www.youtube.com/watch?v=7wtfhZwyrcc",
-    "faded": "https://www.youtube.com/watch?v=60ItHLz5WEA"
+    "humnava" : "https://youtu.be/pP12RCC6Nss?si=hFHWM9jeDHY-ljpT",
+    "kali kali zulfon ke" : "https://youtu.be/o-7b6ctrQX0?si=ungmw930V3cUPCiP"
 }
 
 ## Future Improvements
